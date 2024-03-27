@@ -1,11 +1,7 @@
 import 'dart:async';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:mario/button.dart';
 import 'package:mario/mario.dart';
-import 'package:mario/styles.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -17,12 +13,52 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  double marioX=0;
-  double marioY=1;
+  static double marioX = 0;
+  static double marioY = 1;
+  double time = 0;
+  double height = 0;
+  double initialHeight = marioY;
+  String direction = "right";
+  bool midrun = false;
 
-  void jump(){
-    Timer.periodic(Duration(milliseconds: 50), (timer) { });
-  
+  void preJump() {
+    time = 0;
+    initialHeight = marioY;
+  }
+
+  void jump() {
+    preJump();
+    Timer.periodic(Duration(milliseconds: 50), (timer) {
+      time += 0.05;
+      height = -4.9 * time * time + 5 * time;
+
+      if (initialHeight - height > 1) {
+        setState(() {
+          marioY = 1;
+          timer.cancel();
+        });
+      } else {
+        setState(() {
+          marioY = initialHeight - height;
+        });
+      }
+    });
+  }
+
+  void moveRight() {
+    direction = "right";
+    midrun != midrun;
+    setState(() {
+      marioX += 0.02;
+    });
+  }
+
+  void moveLeft() {
+    direction = "left";
+    midrun != midrun;
+    setState(() {
+      marioX -= 0.02;
+    });
   }
 
   @override
@@ -36,9 +72,12 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Container(
                 color: Colors.blue,
                 child: AnimatedContainer(
-                  alignment: Alignment(marioX,marioY),
-                  duration: Duration(milliseconds: 0),
-                  child: MyMario(),
+                  alignment: Alignment(marioX, marioY),
+                  duration: const Duration(milliseconds: 0),
+                  child: MyMario(
+                    Direction: direction,
+                    midrun: midrun,
+                  ),
                 ),
               )),
           Container(
@@ -53,13 +92,19 @@ class _MyHomePageState extends State<MyHomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   MyButton(
-                    child: const Icon(Icons.arrow_back,color: Colors.white,),
+                    child: const Icon(
+                      Icons.arrow_back,
+                      color: Colors.white,
+                    ),
+                    function: moveLeft,
                   ),
                   MyButton(
-                    child: const Icon(Icons.arrow_upward,color: Colors.white),
+                    child: const Icon(Icons.arrow_upward, color: Colors.white),
+                    function: jump,
                   ),
                   MyButton(
-                    child: const Icon(Icons.arrow_forward,color: Colors.white),
+                    child: const Icon(Icons.arrow_forward, color: Colors.white),
+                    function: moveRight,
                   ),
                 ],
               ),

@@ -3,17 +3,21 @@ import 'package:flutter/material.dart';
 class MyButton extends StatelessWidget {
 
   final child;
+  final function;
 
-   MyButton({super.key, this.child});
+   MyButton({super.key, this.child,this.function});
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(15),
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        color: Colors.brown[300],
-        child: child
+    return GestureDetector(
+      onTap: function,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(15),
+        child: Container(
+          padding: const EdgeInsets.all(10),
+          color: Colors.brown[300],
+          child: child
+        ),
       ),
     );
   }
