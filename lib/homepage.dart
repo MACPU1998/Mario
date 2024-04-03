@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mario/button.dart';
 import 'package:mario/jumpingmario.dart';
 import 'package:mario/mario.dart';
+import 'package:mario/styles.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -51,7 +52,18 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void moveRight() {
     direction = "right";
-    midrun = !midrun;
+
+    Timer.periodic(Duration(milliseconds: 5), (timer) {
+      if (MyButton().userIsHoldingButton() == true) {
+        setState(() {
+          marioX += 0.02;
+          midrun = !midrun;
+        });
+      } else {
+        timer.cancel();
+      }
+    });
+
     setState(() {
       marioX += 0.02;
     });
@@ -59,31 +71,82 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void moveLeft() {
     direction = "left";
-    midrun = !midrun;
-    setState(() {
-      marioX -= 0.02;
+    Timer.periodic(Duration(milliseconds: 5), (timer) {
+      if (MyButton().userIsHoldingButton() == true) {
+        setState(() {
+          marioX -= 0.02;
+          midrun = !midrun;
+        });
+      } else {
+        timer.cancel();
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     return Scaffold(
       body: Column(
         children: [
           Expanded(
               flex: 4,
-              child: Container(
-                color: Colors.blue,
-                child: AnimatedContainer(
-                  alignment: Alignment(marioX, marioY),
-                  duration: const Duration(milliseconds: 0),
-                  child: midjump
-                      ? JumpingMario(direction: direction,)
-                      : MyMario(
-                          Direction: direction,
-                          midrun: midrun,
+              child: Stack(
+                children: [
+                  Container(
+                    color: Colors.blue,
+                    child: AnimatedContainer(
+                      alignment: Alignment(marioX, marioY),
+                      duration: const Duration(milliseconds: 0),
+                      child: midjump
+                          ? JumpingMario(
+                              direction: direction,
+                            )
+                          : MyMario(
+                              Direction: direction,
+                              midrun: midrun,
+                            ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: size.height / 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Column(
+                          children: [
+                            Text(
+                              "MARIO",
+                              style: MyTextStyles.headerText,
+                            ),
+                            SizedBox(
+                              height: 8,
+                            ),
+                            Text("0000", style: MyTextStyles.headerText),
+                          ],
                         ),
-                ),
+                        Column(
+                          children: [
+                            Text("WORLD", style: MyTextStyles.headerText),
+                            SizedBox(
+                              height: 8,
+                            ),
+                            Text("1-1", style: MyTextStyles.headerText),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Text("TIME", style: MyTextStyles.headerText),
+                            SizedBox(
+                              height: 8,
+                            ),
+                            Text("999", style: MyTextStyles.headerText),
+                          ],
+                        ),
+                      ],
+                    ),
+                  )
+                ],
               )),
           Container(
             height: 10,
