@@ -78,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   alignment: Alignment(marioX, marioY),
                   duration: const Duration(milliseconds: 0),
                   child: midjump
-                      ? JumpingMario()
+                      ? JumpingMario(direction: direction,)
                       : MyMario(
                           Direction: direction,
                           midrun: midrun,
