@@ -6,6 +6,8 @@ class MyMushroom extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return  Container(
+      height: 35,
+      width: 35,
       child: Image.asset("assets/images/mushroom.png"),
     );
   }
