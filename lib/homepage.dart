@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mario/button.dart';
 import 'package:mario/jumpingmario.dart';
 import 'package:mario/mario.dart';
+import 'package:mario/mushroom.dart';
 import 'package:mario/styles.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -17,12 +19,27 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   static double marioX = 0;
   static double marioY = 1;
+  double marioSize = 50;
   double time = 0;
   double height = 0;
   double initialHeight = marioY;
+  double mushroomX = 0.5;
+  double mushroomY = 1;
   String direction = "right";
   bool midrun = false;
   bool midjump = false;
+
+  void checkIfAteMushroom() {
+    if ((marioX - mushroomX).abs() < 0.05 &&
+        (marioY - mushroomY).abs() < 0.05) {
+      setState(() {
+        //if eaten , move mushroom off the screen
+        mushroomX=2;
+        //if eaten , mario size is bigger than before
+        marioSize=80;
+      });
+    }
+  }
 
   void preJump() {
     time = 0;
@@ -55,9 +72,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void moveRight() {
     direction = "right";
-
+    checkIfAteMushroom();
     Timer.periodic(Duration(milliseconds: 5), (timer) {
-      if (MyButton().userIsHoldingButton() == true) {
+      checkIfAteMushroom();
+      if (MyButton().userIsHoldingButton() == true && (marioX + 0.02) <1) {
         setState(() {
           marioX += 0.02;
           midrun = !midrun;
@@ -74,8 +92,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void moveLeft() {
     direction = "left";
+    checkIfAteMushroom();
     Timer.periodic(Duration(milliseconds: 5), (timer) {
-      if (MyButton().userIsHoldingButton() == true) {
+      checkIfAteMushroom();
+      if (MyButton().userIsHoldingButton() == true && (marioX + 0.02)>-1) {
         setState(() {
           marioX -= 0.02;
           midrun = !midrun;
@@ -104,13 +124,18 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: midjump
                           ? JumpingMario(
                               direction: direction,
+                        size: marioSize,
                             )
                           : MyMario(
                               Direction: direction,
                               midrun: midrun,
+                              size: marioSize,
                             ),
                     ),
                   ),
+                  Container(
+                      alignment: Alignment(mushroomX, mushroomY),
+                      child: MyMushroom()),
                   Padding(
                     padding: EdgeInsets.only(top: size.height / 20),
                     child: Row(
