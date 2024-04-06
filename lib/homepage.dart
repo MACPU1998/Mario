@@ -30,24 +30,27 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void jump() {
-    midjump = true;
-    preJump();
-    Timer.periodic(Duration(milliseconds: 50), (timer) {
-      time += 0.05;
-      height = -4.9 * time * time + 5 * time;
+    // this first if statement disables the double jump
+    if (midjump == false) {
+      midjump = true;
+      preJump();
+      Timer.periodic(Duration(milliseconds: 50), (timer) {
+        time += 0.05;
+        height = -4.9 * time * time + 5 * time;
 
-      if (initialHeight - height > 1) {
-        midjump = false;
-        setState(() {
-          marioY = 1;
-        });
-        timer.cancel();
-      } else {
-        setState(() {
-          marioY = initialHeight - height;
-        });
-      }
-    });
+        if (initialHeight - height > 1) {
+          midjump = false;
+          setState(() {
+            marioY = 1;
+          });
+          timer.cancel();
+        } else {
+          setState(() {
+            marioY = initialHeight - height;
+          });
+        }
+      });
+    }
   }
 
   void moveRight() {
@@ -119,7 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               "MARIO",
                               style: MyTextStyles.headerText,
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 8,
                             ),
                             Text("0000", style: MyTextStyles.headerText),
@@ -128,7 +131,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         Column(
                           children: [
                             Text("WORLD", style: MyTextStyles.headerText),
-                            SizedBox(
+                            const SizedBox(
                               height: 8,
                             ),
                             Text("1-1", style: MyTextStyles.headerText),
@@ -137,7 +140,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         Column(
                           children: [
                             Text("TIME", style: MyTextStyles.headerText),
-                            SizedBox(
+                            const SizedBox(
                               height: 8,
                             ),
                             Text("999", style: MyTextStyles.headerText),
